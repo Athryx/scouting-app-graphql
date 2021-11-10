@@ -40,7 +40,7 @@ fn graphql_playground() -> Html<String> {
 
 #[get("/")]
 fn index() -> Redirect {
-	Redirect::to("/graphiql")
+	Redirect::to("/graphql_playground")
 }
 
 #[launch]

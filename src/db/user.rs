@@ -9,26 +9,26 @@ use argon2::{
 	Params,
 };
 
-use super::schema::users;
-
 use lazy_static::lazy_static;
 
-const MIB: u32 = 1024 * 1024;
+use super::schema::users;
 
 // default parameters recomended from some website
 lazy_static! {
-	static ref HASHER: Argon2<'static> = Argon2::new(Algorithm::Argon2id, Version::default(), Params::new(15 * MIB, 2, 1, None).unwrap());
+	// NOTE: the memory argument to params is in KiB
+	static ref HASHER: Argon2<'static> = Argon2::new(Algorithm::Argon2id, Version::default(), Params::new(15 * 1024, 2, 1, None).unwrap());
 }
 
 #[derive(Debug, Queryable, Identifiable)]
-pub struct User {
-	id: u64,
+#[table_name = "users"]
+pub struct DbUser {
+	id: i64,
 	name: String,
 	password: String,
 }
 
-impl User {
-	pub fn id(&self) -> u64 {
+impl DbUser {
+	pub fn id(&self) -> i64 {
 		self.id
 	}
 

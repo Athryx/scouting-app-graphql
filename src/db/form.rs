@@ -1,8 +1,8 @@
-use super::team::Team;
+use super::team::DbTeam;
 use super::schema::forms;
 
 #[derive(Debug, Queryable, Identifiable, Associations)]
-#[belongs_to(Team)]
+#[belongs_to(DbTeam, foreign_key = "team_id")]
 pub struct Form {
 	id: u64,
 	team_id: u64,

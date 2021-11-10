@@ -1,6 +1,8 @@
+pub mod types;
 pub mod query;
 pub mod mutation;
 pub mod user;
+pub mod team;
 
 use juniper::{RootNode, EmptySubscription};
 

@@ -8,11 +8,12 @@ use juniper::executor::Context;
 
 use crate::prelude::*;
 
-mod schema;
-mod user;
-mod team;
-mod data;
-mod form;
+pub mod schema;
+pub mod paginate;
+pub mod user;
+pub mod team;
+pub mod data;
+pub mod form;
 
 type ConnType = Pool<ConnectionManager<PgConnection>>;
 
