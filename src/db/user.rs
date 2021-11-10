@@ -38,7 +38,7 @@ impl DbUser {
 
 	pub fn check_password(&self, password: &str) -> bool {
 		let bytes = password.as_bytes();
-		let old_hash = PasswordHash::new(&self.name).expect("invalid password hash stored in database");
+		let old_hash = PasswordHash::new(&self.password).expect("invalid password hash stored in database");
 
 		HASHER.verify_password(bytes, &old_hash).is_ok()
 	}

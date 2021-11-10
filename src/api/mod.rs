@@ -1,4 +1,5 @@
 pub mod types;
+pub mod token;
 pub mod query;
 pub mod mutation;
 pub mod user;

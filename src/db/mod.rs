@@ -3,7 +3,6 @@ use std::ops::Deref;
 
 use diesel::pg::PgConnection;
 use diesel::r2d2::{ConnectionManager, Pool};
-use dotenv::dotenv;
 use juniper::executor::Context;
 
 use crate::prelude::*;
@@ -26,9 +25,6 @@ impl Connection {
 	}
 
 	pub fn from_env() -> Self {
-		// ignore failure
-		dotenv().ok();
-	
 		let db_url = env::var("DATABASE_URL").expect("DATABSE_URL enviroment variable was not set");
 
 		Self::new(db_url)

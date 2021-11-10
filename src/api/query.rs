@@ -9,6 +9,26 @@ pub struct RootQuery;
 
 #[graphql_object(Context = Connection)]
 impl RootQuery {
+	/// Authenticate as a user and return a JSON Web Token that gives you this user's privalidges
+	fn authenticate(context: &Connection, name: String, password: String) -> FieldResult<Option<UserToken>> {
+		use schema::users;
+
+		let user = users::table.filter(users::name.eq(&name))
+			.first::<DbUser>(&context.get()?);
+
+		match user {
+			Ok(user) => {
+				if user.check_password(&password) {
+					Ok(Some(UserTokenData::from_user(user).encode()?))
+				} else {
+					Ok(None)
+				}
+			},
+			Err(_) => Ok(None),
+		}
+	}
+
+	/// List users, offset is the id to start listing from, limit is the maximum amount to list
 	fn users(context: &Connection, offset: I64, limit: I64) -> FieldResult<Vec<User>> {
 		use schema::users;
 
@@ -26,6 +46,7 @@ impl RootQuery {
 	}
 
 	// FIXME: this is very bad performance
+	/// Search for users by name, limit is the maximum amount to list
 	fn search_users(context: &Connection, name: String, limit: I64) -> FieldResult<Vec<User>> {
 		use schema::users;
 
@@ -45,6 +66,7 @@ impl RootQuery {
 		Ok(out)
 	}
 
+	/// List teams, offset is the id to start listing from, limit is the maximum amount to list
 	fn teams(context: &Connection, offset: I64, limit: I64) -> FieldResult<Vec<Team>> {
 		use schema::teams;
 
@@ -62,6 +84,7 @@ impl RootQuery {
 	}
 
 	// FIXME: this is very bad performance
+	/// Search for teams by name, limit is the maximum amount to list
 	fn search_teams(context: &Connection, name: String, limit: I64) -> FieldResult<Vec<Team>> {
 		use schema::teams;
 
