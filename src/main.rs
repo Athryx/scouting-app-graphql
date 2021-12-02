@@ -4,6 +4,8 @@
 #[macro_use]
 extern crate diesel;
 #[macro_use]
+extern crate diesel_derive_enum;
+#[macro_use]
 extern crate rocket;
 #[macro_use]
 extern crate juniper;
@@ -11,23 +13,30 @@ extern crate juniper;
 mod api;
 mod db;
 mod prelude;
+mod token;
+mod context;
 
 use rocket::{State, response::{Redirect, content::Html}};
 use juniper::{RootNode, EmptySubscription};
 use juniper_rocket::{GraphQLRequest, GraphQLResponse, graphiql_source, playground_source};
+use diesel::r2d2::Error;
 use dotenv::dotenv;
 
 use db::Connection;
+pub use token::{UserToken, UserTokenGuard};
+pub use context::Context;
 use api::{ApiRoot, query::RootQuery, mutation::RootMutation};
 
 #[get("/graphql?<request>")]
-fn get_graphql(request: GraphQLRequest, api_root: &State<ApiRoot>, db_conn: &State<Connection>) -> GraphQLResponse {
-	request.execute_sync(api_root, db_conn)
+fn get_graphql(request: GraphQLRequest, api_root: &State<ApiRoot>, db_conn: &State<Connection>, token: UserTokenGuard) -> GraphQLResponse {
+	let context = Context::new(db_conn.get().unwrap(), token);
+	request.execute_sync(api_root, &context)
 }
 
 #[post("/graphql", data = "<request>")]
-fn post_graphql(request: GraphQLRequest, api_root: &State<ApiRoot>, db_conn: &State<Connection>) -> GraphQLResponse {
-	request.execute_sync(api_root, db_conn)
+fn post_graphql(request: GraphQLRequest, api_root: &State<ApiRoot>, db_conn: &State<Connection>, token: UserTokenGuard) -> GraphQLResponse{
+	let context = Context::new(db_conn.get().unwrap(), token);
+	request.execute_sync(api_root, &context)
 }
 
 // TODO: decide on either graphiql or graphql playground, and remove the other
@@ -54,6 +63,6 @@ fn rocket() -> _ {
 
 	rocket::build()
 		.manage(Connection::from_env())
-		.manage(RootNode::new(RootQuery, RootMutation, EmptySubscription::<Connection>::new()))
+		.manage(RootNode::new(RootQuery, RootMutation, EmptySubscription::<Context>::new()))
 		.mount("/", routes![index, get_graphql, post_graphql, graphiql, graphql_playground])
 }

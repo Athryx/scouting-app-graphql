@@ -12,7 +12,9 @@ rocket_contrib = "0.4.10"
 serde = { version = "1.0.130", features = ["derive"] }
 jsonwebtoken = "7.2.0"
 diesel = { version = "1.4.8", features = ["postgres", "r2d2"] }
+diesel-derive-enum = { version = "1.1.1", features = ["postgres"] }
 argon2 = "0.3.1"
 dotenv = "0.15.0"
 juniper = "0.15.7"
 juniper_rocket = "0.8.0"
+derive_more = "0.99.16"

@@ -2,8 +2,7 @@ use std::env;
 use std::ops::Deref;
 
 use diesel::pg::PgConnection;
-use diesel::r2d2::{ConnectionManager, Pool};
-use juniper::executor::Context;
+use diesel::r2d2::{ConnectionManager, Pool, PooledConnection};
 
 use crate::prelude::*;
 
@@ -14,9 +13,10 @@ pub mod team;
 pub mod data;
 pub mod form;
 
-type ConnType = Pool<ConnectionManager<PgConnection>>;
+pub type ConnPoolType = Pool<ConnectionManager<PgConnection>>;
+pub type ConnType = PooledConnection<ConnectionManager<PgConnection>>;
 
-pub struct Connection(ConnType);
+pub struct Connection(ConnPoolType);
 
 impl Connection {
 	pub fn new(url: String) -> Self {
@@ -32,11 +32,9 @@ impl Connection {
 }
 
 impl Deref for Connection {
-	type Target = ConnType;
+	type Target = ConnPoolType;
 
 	fn deref(&self) -> &Self::Target {
 		&self.0
 	}
 }
-
-impl Context for Connection {}

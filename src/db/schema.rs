@@ -23,18 +23,19 @@ table! {
 }
 
 table! {
+	use diesel::types::Int8;
+	use crate::db::team::MemberTypeMapping;
     members (id) {
         id -> Int8,
         user_id -> Int8,
         team_id -> Int8,
-        admin -> Bool,
+        mtype -> MemberTypeMapping,
     }
 }
 
 table! {
     teams (id) {
         id -> Int8,
-        owner_id -> Int8,
         name -> Varchar,
     }
 }
@@ -53,7 +54,6 @@ joinable!(entries -> datasets (dataset_id));
 joinable!(forms -> teams (team_id));
 joinable!(members -> teams (team_id));
 joinable!(members -> users (user_id));
-joinable!(teams -> users (owner_id));
 
 allow_tables_to_appear_in_same_query!(
     datasets,

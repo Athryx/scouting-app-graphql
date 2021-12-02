@@ -1,5 +1,4 @@
 use std::num::ParseIntError;
-use std::cmp::min;
 
 use juniper::{Value, InputValue, ParseError, ParseScalarResult, parser::{ScalarToken, Token}};
 

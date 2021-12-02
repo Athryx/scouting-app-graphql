@@ -1,12 +1,12 @@
 pub mod types;
-pub mod token;
 pub mod query;
 pub mod mutation;
 pub mod user;
+pub mod member;
 pub mod team;
 
 use juniper::{RootNode, EmptySubscription};
 
-use crate::db::Connection;
+use crate::Context;
 
-pub type ApiRoot = RootNode<'static, query::RootQuery, mutation::RootMutation, EmptySubscription<Connection>>;
+pub type ApiRoot = RootNode<'static, query::RootQuery, mutation::RootMutation, EmptySubscription<Context>>;
