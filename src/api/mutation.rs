@@ -2,7 +2,7 @@ use diesel::insert_into;
 
 use crate::prelude::*;
 use crate::db::user::{DbUser, NewUser};
-use crate::db::team::{DbTeam, NewTeam, Member, NewMember, MemberType};
+use crate::db::team::{DbTeam, NewTeam, DbMember, NewMember, MemberType};
 use super::user::User;
 use super::team::Team;
 

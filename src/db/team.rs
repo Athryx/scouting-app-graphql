@@ -32,24 +32,36 @@ impl<'a> NewTeam<'a> {
 	}
 }
 
-#[derive(Debug, Clone, Copy, DbEnum)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, DbEnum)]
 #[PgType = "member_type"]
 #[DieselType = "MemberTypeMapping"]
+#[derive(GraphQLEnum)]
 pub enum MemberType {
 	Owner,
 	Admin,
 	Member,
 }
 
-#[derive(Debug, Queryable, Identifiable, Associations)]
+#[derive(Debug, Queryable, Identifiable, Associations, AsChangeset)]
 #[belongs_to(DbUser, foreign_key = "user_id")]
 #[belongs_to(DbTeam, foreign_key = "team_id")]
-pub struct Member {
+#[table_name = "members"]
+pub struct DbMember {
 	id: i64,
 	user_id: i64,
 	team_id: i64,
 	#[column_name = "mtype"]
-	member_type: MemberType,
+	pub member_type: MemberType,
+}
+
+impl DbMember {
+	pub fn id(&self) -> i64 {
+		self.id
+	}
+
+	pub fn member_type(&self) -> MemberType {
+		self.member_type
+	}
 }
 
 #[derive(Debug, Insertable)]

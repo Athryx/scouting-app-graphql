@@ -34,6 +34,14 @@ table! {
 }
 
 table! {
+    owners (id) {
+        id -> Int8,
+        user_id -> Nullable<Int8>,
+        team_id -> Nullable<Int8>,
+    }
+}
+
+table! {
     teams (id) {
         id -> Int8,
         name -> Varchar,
@@ -54,12 +62,15 @@ joinable!(entries -> datasets (dataset_id));
 joinable!(forms -> teams (team_id));
 joinable!(members -> teams (team_id));
 joinable!(members -> users (user_id));
+joinable!(owners -> teams (team_id));
+joinable!(owners -> users (user_id));
 
 allow_tables_to_appear_in_same_query!(
     datasets,
     entries,
     forms,
     members,
+    owners,
     teams,
     users,
 );

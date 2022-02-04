@@ -29,8 +29,11 @@ impl RootQuery {
 	}
 
 	/// List users, offset is the id to start listing from, limit is the maximum amount to list
-	fn users(context: &Context, offset: I64, limit: I64) -> FieldResult<Vec<User>> {
+	fn users(context: &Context, offset: Option<I64>, limit: Option<I64>) -> FieldResult<Vec<User>> {
 		use schema::users;
+
+		let offset = offset.unwrap_or(0.into());
+		let limit = limit.unwrap_or(i64::MAX.into());
 
 		let users = users::table.order_by(users::id.asc())
 			.filter(users::id.ge(offset.n()))
@@ -67,8 +70,11 @@ impl RootQuery {
 	}
 
 	/// List teams, offset is the id to start listing from, limit is the maximum amount to list
-	fn teams(context: &Context, offset: I64, limit: I64) -> FieldResult<Vec<Team>> {
+	fn teams(context: &Context, offset: Option<I64>, limit: Option<I64>) -> FieldResult<Vec<Team>> {
 		use schema::teams;
+
+		let offset = offset.unwrap_or(0.into());
+		let limit = limit.unwrap_or(i64::MAX.into());
 
 		let teams = teams::table.order_by(teams::id.asc())
 			.filter(teams::id.ge(offset.n()))
